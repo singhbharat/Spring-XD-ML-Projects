@@ -30,8 +30,8 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/hadoop/ML_API.git"
+    "url": "git://github.com/singhbharat/ml-projects.git"
   },
-  "author": "hadoop",
+  "author": "singhbharat",
   "license": ""
 }
