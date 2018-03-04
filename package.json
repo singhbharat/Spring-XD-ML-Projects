@@ -19,9 +19,15 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
+    "json-stringify": "^1.0.0",
+    "properties-parser": "^0.3.1",
     "rc": "1.0.1",
+    "restify": "^6.3.4",
+    "restify-clients": "^1.5.2",
     "sails": "~0.12.13",
-    "sails-disk": "~0.10.9"
+    "sails-disk": "~0.10.9",
+    "stringformat": "0.0.5",
+    "update": "^0.7.4"
   },
   "scripts": {
     "debug": "node debug app.js",
