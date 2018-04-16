@@ -43,6 +43,23 @@ var sink_definition="file"
 var module_pipe_separator = " | ";
 exports.module_pipe_separator = module_pipe_separator;
 
+
+// twitter stream definition
+var twitter_stream_definition="twittersearch --consumerKey={0} --consumerSecret={1} --query={2}";
+
+//twitter stream definition
+function get_twitter_stream_definition(req,cb1){
+	var sails=req._sails;
+	var params=req.params.all();
+	var consumerKey=params.consumerKey;
+	var consumerSecret=params.consumerSecret;
+	var query=params.query;
+	var t_stream_definition=sformat(twitter_stream_definition,consumerKey,consumerSecret,query);
+
+	return cb1(null,t_stream_definition);
+}
+exports.get_twitter_stream_definition=get_twitter_stream_definition;
+
 //mqtt source definition
 function get_mqtt_source_definition(req,callback1) {
 	var sails = req._sails;
@@ -74,6 +91,16 @@ exports.get_model_name=get_model_name;
 	return clientId;
 }
 exports.getClientId = getClientId
+/*
+//sink_module_definition
+function get_sink_defiition(req,callback3){
+	var sails=req._sails;
+	var params=req.params.all();
+	var sink_definition=sformat(sink);
+	return callback3(null,sink_definition)
+
+}
+*/
 
 //stream life cycle
 //1. create streams
@@ -81,20 +108,20 @@ function createStreams(req, res, definition, callback3) {
     var sails = req._sails;
 	var params = req.params.all();
 	var stream_name = params.stream_name;
-	var deploy = false;
+	//var deploy = false;
 	var stream = {};
     stream.name = stream_name;
-    console.log("stream.name="+stream.name);
+   // console.log("stream.name="+stream.name);
     stream.definition = definition;
-    console.log("stream.definition="+stream.definition);
-    stream.deploy = deploy;
+    //console.log("stream.definition="+stream.definition);
+    //stream.deploy = deploy;
    // console.log("stream.deploy="+stream.deploy);
-    var final_stream=JSON.stringify(stream);
-    console.log("stream-->"+final_stream);
+    //var final_stream=JSON.stringify(stream);
+    console.log("stream-->"+JSON.stringify(stream));
     //console.log("rclient-->"+JSON.stringify(rclient));
-    rclient.post('/streams/definitions/'+stream , function (err, rq, rs, success) {
+    rclient.post('/streams/definitions/',stream , function (err, rq, rs, success) {
     	if (err) {return res.json("error during stream creation");}	
-    	console.log("check2");
+    	//console.log("check2");
     	var error = null;
     	var result = "";
     	return callback3(error, result);
@@ -149,14 +176,20 @@ module.exports={
 			else if(result){
 				var mqtt_source_definition=result;
 				console.log("mqtt-->"+mqtt_source_definition);
+
+				//call output type function
+
+
+
 				get_model_name(req,function callback2(err1,result1){
 					if(err){return res.json("error1");}
 					else if(result1){
 						var ml_model_definition=result1;
 						console.log("model-->"+ml_model_definition);
 						var definition=mqtt_source_definition+" --outputType=application/x-xd-tuple"+module_pipe_separator+ml_model_definition+" --location=/home/hadoop/Downloads/iris-flower-classification-naive-bayes-1.pmml.xml --inputFieldMapping='sepalLength:Sepal.Length,sepalWidth:Sepal.Width,petalLength:Petal.Length,petalWidth:Petal.Width' --outputFieldMapping='Predicted_Species:predictedSpecies'"+module_pipe_separator+sink_definition;
-						console.log("definition-->"+definition);
-						createStreams(req,res, definition,function callback3(err2, result2) {
+						console.log("definition-->"+JSON.stringify(definition));
+						/*
+						createStreams(req,res,definition,function callback3(err2, result2) {
 							if (err2) {return res.json("error2");}
 							else if(result2){
 								console.log("check1");
@@ -167,9 +200,60 @@ module.exports={
 					  	        return res.json(msg,200);
 					  	    }else{return res.json("error2");}
 					  	});
-					}else{return res.json("error1");}
+					  	*/
+					  	var  stream={};
+					  	stream.name=stream_name;
+					  	stream.definition=definition;
+					  	console.log("stream"+JSON.stringify(stream));
+					  	console.log("stream type-->"+typeof(stream));
+    					rclient.post('/streams/definitions/',stream , function (err, rq, rs, success) {
+    					if (err) {return res.json("error during stream creation");}
+    					else return res.json("stream created",200);	
+					});
+    				}
+    				else{return res.json("error1");}
 				});
 			}else{return res.json("error");}
 		});
-	}
+	},
+
+	create1:function(req,res){
+		var params=req.params.all();
+		var stream_name=params.stream_name;
+		var source_definition="time";
+		var definition=source_definition+module_pipe_separator+sink_definition;
+		console.log("demo_definition-->"+JSON.stringify(definition));
+
+		var stream={};
+		stream.name=stream_name;
+		stream.definition=definition;
+		console.log("stream"+JSON.stringify(stream));
+
+    	rclient.post('/streams/definitions/',stream , function (err, rq, rs, success) {
+    	if (err) {return res.json("error during stream creation");}	
+    	else return res.json("stream created");
+    });
+    },
+
+    create2:function(req,res){
+		var params=req.params.all();
+		var stream_name=params.stream_name;
+		
+		get_twitter_stream_definition(req,function callback(err,result){
+			if(err){
+				return res.json("err",404);
+			} else if(result){
+				var twitter_stream_definition1=result;
+				var definition=twitter_stream_definition1+module_pipe_separator+sink_definition;
+				var stream={};
+				stream.name=stream_name;
+				stream.definition=definition;
+				console.log("twitter_stream-->"+JSON.stringify(stream));
+				rclient.post('/streams/definitions/',stream , function (err, rq, rs, success) {
+					if (err) {return res.json("error during stream creation");}	
+    				else return res.json("stream created",200);
+    			});
+			}
+		});		
+    }
 };
