@@ -204,8 +204,6 @@ module.exports={
 					  	var  stream={};
 					  	stream.name=stream_name;
 					  	stream.definition=definition;
-					  	console.log("stream"+JSON.stringify(stream));
-					  	console.log("stream type-->"+typeof(stream));
     					rclient.post('/streams/definitions/',stream , function (err, rq, rs, success) {
     					if (err) {return res.json("error during stream creation");}
     					else return res.json("stream created",200);	
