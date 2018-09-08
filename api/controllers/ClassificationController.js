@@ -42,7 +42,7 @@ var sink_definition="file"
 //pipe operator
 var module_pipe_separator = " | ";
 exports.module_pipe_separator = module_pipe_separator;
-
+get_mqtt
 
 // twitter stream definition
 var twitter_stream_definition="twittersearch --consumerKey={0} --consumerSecret={1} --query={2}";
@@ -90,7 +90,7 @@ exports.get_model_name=get_model_name;
 	var sails = req._sails;
 	return clientId;
 }
-exports.getClientId = getClientId
+exports.getClientId = getClientId;
 /*
 //sink_module_definition
 function get_sink_defiition(req,callback3){
@@ -178,10 +178,7 @@ module.exports={
 				console.log("mqtt-->"+mqtt_source_definition);
 
 				//call output type function
-
-
-
-				get_model_name(req,function callback2(err1,result1){
+					get_model_name(req,function callback2(err1,result1){
 					if(err){return res.json("error1");}
 					else if(result1){
 						var ml_model_definition=result1;
@@ -204,6 +201,7 @@ module.exports={
 					  	var  stream={};
 					  	stream.name=stream_name;
 					  	stream.definition=definition;
+					  	sails.log.debug("stream_definitioin-->"+stream);
     					rclient.post('/streams/definitions/',stream , function (err, rq, rs, success) {
     					if (err) {return res.json("error during stream creation");}
     					else return res.json("stream created",200);	

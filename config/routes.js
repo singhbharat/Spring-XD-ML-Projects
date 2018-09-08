@@ -46,12 +46,8 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-<<<<<<< HEAD
   'post /spring-xd/analytics/cassification/naive-bayes/:stream_name': 'ClassificationController.create',
   'post /demo/:stream_name':'ClassificationController.create1',
-  'post /twitter/:stream_name':'ClassificationController.create2'
-=======
+  'post /twitter/:stream_name':'ClassificationController.create2',
   'post /spring-xd/analytics/cassification/naive-bayes/:stream_name': 'ClassificationController.create'
->>>>>>> 7abdb52542990a284352f064aa4f92d8d6f49e66
-
 };
